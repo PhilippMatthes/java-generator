@@ -1,11 +1,6 @@
-import random
 import shutil
-import string
 import subprocess
 import tempfile
-
-import os
-from time import sleep
 
 from generator.java_class import RandomClass
 
