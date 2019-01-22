@@ -7,9 +7,13 @@ from generator.java_class import RandomClass
 
 class TemporaryFile:
     def __init__(self, name, contents, suffix):
-        self.dir = tempfile.mkdtemp()
-        self.file, self.path = tempfile.mkstemp(suffix=suffix, prefix=name, dir=self.dir)
         self.name = name
+        self.dir = tempfile.mkdtemp()
+        self.path = "{dir}/{name}{suffix}".format(
+            dir=self.dir,
+            name=name,
+            suffix=suffix
+        )
         with open(self.path, "wb") as f:
             f.write(contents)
 
@@ -27,8 +31,10 @@ class TemporaryJavaFile(TemporaryFile):
 
     def compile(self):
         with tempfile.TemporaryDirectory() as output_dir:
-            p = subprocess.Popen(["javac", self.path, "-d", output_dir],
-                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            p = subprocess.Popen(
+                ["javac", self.path, "-d", output_dir],
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
             output, error = p.communicate()
             class_file_path = "{dir}/{name}.class".format(dir=output_dir, name=self.name)
             with open(class_file_path, "rb") as f:
