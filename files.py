@@ -26,14 +26,13 @@ class TemporaryJavaFile(TemporaryFile):
         super().__init__(name, contents, ".java")
 
     def compile(self):
-        p = subprocess.Popen(["javac", self.path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        output, error = p.communicate()
-        print("COMPILING...")
-        print("STDOUT: " + str(output))
-        print("STDERR: " + str(error))
-        class_file_path = "{dir}/{name}.class".format(dir=str(self.dir), name=self.name)
-        with open(class_file_path, "rb") as f:
-            return TemporaryClassFile(self.name, f.read())
+        with tempfile.TemporaryDirectory() as output_dir:
+            p = subprocess.Popen(["javac", self.path, "-d", output_dir],
+                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            output, error = p.communicate()
+            class_file_path = "{dir}/{name}.class".format(dir=output_dir, name=self.name)
+            with open(class_file_path, "rb") as f:
+                return TemporaryClassFile(self.name, f.read())
 
 
 class TemporaryClassFile(TemporaryFile):
