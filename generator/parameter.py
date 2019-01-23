@@ -5,37 +5,37 @@ from generator.type import RandomRandomizedType
 
 
 class Parameter:
-    def __init__(self, type, name, final=False):
-        self._type = type
-        self._name = name
-        self._final = final
+    def __init__(self, datatype, name, final=False):
+        self.datatype = datatype
+        self.name = name
+        self.final = final
 
     def __str__(self):
-        return "{final}{type} {name}".format(
-            final="final " if self._final else "",
-            type=self._type,
-            name=self._name
+        return "{final}{datatype} {name}".format(
+            final="final " if self.final else "",
+            datatype=self.datatype,
+            name=self.name
         )
 
 
 class RandomizedParameter(Parameter):
     def __init__(self):
-        type = RandomRandomizedType()
+        datatype = RandomRandomizedType()
         name = "".join(
             random.choice(string.ascii_lowercase) for _ in range(10)
         )
         final = bool(random.getrandbits(1))
-        super().__init__(type, name, final)
+        super().__init__(datatype, name, final)
 
 
 class RandomizedNonFinalParameter(Parameter):
     def __init__(self):
-        type = RandomRandomizedType()
+        datatype = RandomRandomizedType()
         name = "".join(
             random.choice(string.ascii_lowercase) for _ in range(10)
         )
         final = False
-        super().__init__(type, name, final)
+        super().__init__(datatype, name, final)
 
 
 if __name__ == "__main__":

@@ -1,20 +1,20 @@
 import random
 
-from generator.parameter import RandomizedNonFinalParameter
+from generator.parameter import RandomizedNonFinalParameter, Parameter
 from generator.visibility import RandomVisibility
 
 
 class Attribute:
-    def __init__(self, visibility, static, parameter):
-        self._visibility = visibility
-        self._static = static
-        self._parameter = parameter
+    def __init__(self, visibility, is_static, parameter):
+        self.visibility = visibility
+        self.is_static = is_static
+        self.parameter = parameter
 
     def __str__(self):
         return "{visibility} {static}{parameter};".format(
-            visibility=self._visibility,
-            static="static " if self._static else "",
-            parameter=self._parameter
+            visibility=self.visibility,
+            static="static " if self.is_static else "",
+            parameter=self.parameter
         )
 
 

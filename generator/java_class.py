@@ -7,29 +7,45 @@ from generator.function import RandomFunction
 
 class Class:
     def __init__(self, attributes, name, functions):
-        self._attributes = [str(a) for a in attributes]
-        self._name = name
-        self._functions = [str(f) for f in functions]
+        self.attributes = attributes
+        self.name = name
+        self.functions = functions
 
     @property
-    def name(self):
-        return self._name
+    def constructor(self):
+        non_static_attribs = [a for a in self.attributes if not a.is_static]
+        constructor_params = ", ".join([str(a.parameter) for a in non_static_attribs])
+        constructor_assignments = "\n".join([
+            "this.{attribute_name} = {attribute_name};".format(
+                attribute_name=a.parameter.name
+            ) for a in non_static_attribs
+        ])
+        return """
+        {name} ({constructor_params}) {{
+            {constructor_assignments}
+        }}
+        """.format(
+            name=self.name,
+            constructor_params=constructor_params,
+            constructor_assignments=constructor_assignments
+        )
 
     def __str__(self):
-        formatted_attributes = "\n".join(self._attributes)
-        formatted_functions = "\n".join(self._functions)
+        formatted_attributes = "\n".join([str(a) for a in self.attributes])
+        formatted_functions = "\n".join([str(f) for f in self.functions])
         return """
         class {name} {{
-        
             {formatted_attributes}
             
-            {formatted_functions}
+            {constructor}
             
+            {formatted_functions}
         }}
         
         """.format(
-            name=self._name,
+            name=self.name,
             formatted_attributes=formatted_attributes,
+            constructor=self.constructor,
             formatted_functions=formatted_functions
         )
 
