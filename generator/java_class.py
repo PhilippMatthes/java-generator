@@ -3,13 +3,15 @@ import string
 
 from generator.attribute import RandomAttribute
 from generator.function import RandomFunction
+from generator.interface import ComparableInterface
 
 
 class Class:
-    def __init__(self, attributes, name, functions):
+    def __init__(self, attributes, name, functions, interface=None):
         self.attributes = attributes
         self.name = name
         self.functions = functions
+        self.interface = interface
 
     @property
     def constructor(self):
@@ -34,19 +36,26 @@ class Class:
         formatted_attributes = "\n".join([str(a) for a in self.attributes])
         formatted_functions = "\n".join([str(f) for f in self.functions])
         return """
-        class {name} {{
+        {interface_imports}
+        
+        class {name} {implements_statement} {{
             {formatted_attributes}
             
             {constructor}
             
             {formatted_functions}
+            
+            {interface_implementation}
         }}
         
         """.format(
+            interface_imports=self.interface.import_statement if self.interface else "",
             name=self.name,
+            implements_statement=self.interface.implements_statement if self.interface else "",
             formatted_attributes=formatted_attributes,
             constructor=self.constructor,
-            formatted_functions=formatted_functions
+            formatted_functions=formatted_functions,
+            interface_implementation=self.interface.implementation if self.interface else ""
         )
 
 
@@ -65,7 +74,8 @@ class RandomClass(Class):
         )
         functions = [RandomFunction()
                      for _ in range(random.randint(min_num_functions, max_num_functions))]
-        super().__init__(attributes, name, functions)
+        interface = ComparableInterface()
+        super().__init__(attributes, name, functions, interface)
 
 
 if __name__ == "__main__":

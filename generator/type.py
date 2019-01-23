@@ -17,6 +17,11 @@ class RandomizedType(Type):
         super().__init__(return_statement, return_type)
 
 
+class ObjectType(Type):
+    def __init__(self):
+        super().__init__("return null;", "Object")
+
+
 class VoidType(Type):
     def __init__(self):
         super().__init__("return;", "void")
@@ -37,6 +42,14 @@ class IntegerType(RandomizedType):
         randomized_value = random.randint(0, 1337)
         return_statement = "return {};".format(randomized_value)
         return_type = "Integer"
+        super().__init__(return_statement, return_type, randomized_value)
+
+
+class NonNullableIntegerType(RandomizedType):
+    def __init__(self):
+        randomized_value = random.randint(0, 1337)
+        return_statement = "return {};".format(randomized_value)
+        return_type = "int"
         super().__init__(return_statement, return_type, randomized_value)
 
 
